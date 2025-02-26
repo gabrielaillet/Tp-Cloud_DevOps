@@ -11,6 +11,8 @@ services:
 
   loadbalancer:
     build: ./nginx
+    ports:
+      - 8000:80
   
   redis:
     image: redis:alpine

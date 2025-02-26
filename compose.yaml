@@ -1,9 +1,26 @@
 services:
   v1:
     build: ./vote
+    ports: 
+    - "5001:5000"
  
   v2:
     build: ./vote
+    ports: 
+    - "5002:5000"
 
   loadbalancer:
     build: ./nginx
+  
+  redis:
+    image: redis:alpine
+    volumes: 
+      - ./healthcheks/:/healthcheks/
+    command: ./healthcheks/redis.sh
+  db:
+    image: postgres:15-alpine
+    volumes: 
+      - db-data:/var/lib/postgresql/data/
+    command: ./healthcheks/postgres.sh
+volumes: 
+  db-data:

@@ -18,7 +18,7 @@ app.logger.setLevel(logging.INFO)
 
 def get_redis():
     if not hasattr(g, 'redis'):
-        g.redis = Redis(host="redis", db=0, socket_timeout=5)
+        g.redis = Redis(host="redis", port=6379,db=0, socket_timeout=5)
     return g.redis
 
 @app.route("/", methods=['POST','GET'])
@@ -28,7 +28,7 @@ def hello():
         voter_id = hex(random.getrandbits(64))[2:-1]
 
     vote = None
-
+    print(request.method)
     if request.method == 'POST':
         redis = get_redis()
         vote = request.form['vote']

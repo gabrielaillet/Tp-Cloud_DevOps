@@ -3,26 +3,45 @@ services:
     build: ./vote
     ports: 
     - "5001:5000"
+    depends_on:
+      - redis
  
   v2:
     build: ./vote
     ports: 
     - "5002:5000"
+    depends_on:
+      - redis
 
-  loadbalancer:
+  nginx:
     build: ./nginx
     ports:
       - 8000:80
-  
+    depends_on:
+      - redis
+
+
   redis:
     image: redis:alpine
+    container_name: redis-server
+    ports:
+      - "6379:6379"
     volumes: 
-      - ./healthcheks/:/healthcheks/
-    command: ./healthcheks/redis.sh
-  db:
-    image: postgres:15-alpine
-    volumes: 
-      - db-data:/var/lib/postgresql/data/
-    command: ./healthcheks/postgres.sh
+    - ./healthchecks/:/healthchecks/  # This ensures scripts exist inside the container
+    
+
+  # db:
+  #   image: postgres:15-alpine
+  #   volumes: 
+  #     - db-data:/var/lib/postgresql/data/
+  #     - ./healthchecks/:/healthchecks/
+  #   command: ["/healthchecks/postgres.sh"]
+  
+  # seed:
+  #   build: ./seed-data
+  #   depends_on:
+  #     - nginx
+
 volumes: 
   db-data:
+    

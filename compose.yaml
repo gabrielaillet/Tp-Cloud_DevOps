@@ -55,16 +55,26 @@ services:
       - back-tier
     environment:
       POSTGRES_USER: myuser 
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
     volumes: 
       - db-data:/var/lib/postgresql/data/
     # command: ./healthcheks/postgres.sh
 
+    
   # seed:
   #   build: ./seed-data
   #   depends_on:
   #     - nginx
+
+  worker:
+    build: ./worker
+    depends_on:
+      - redis
+      - db
+
 volumes: 
   db-data:
     name: my-db-data

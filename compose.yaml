@@ -1,3 +1,9 @@
+networks:
+  back-tier:
+    internal: true  
+  front-tier:
+    internal: false 
+
 services:
   v1:
     build: ./vote
@@ -5,6 +11,12 @@ services:
     - "5001:5000"
     depends_on:
       - redis
+      - db
+    networks:
+      - front-tier
+      - back-tier
+    
+
  
   v2:
     build: ./vote
@@ -12,36 +24,47 @@ services:
     - "5002:5000"
     depends_on:
       - redis
+      - db
+    networks:
+      - front-tier
+      - back-tier
 
-  nginx:
+  loadbalancer:
     build: ./nginx
     ports:
       - 8000:80
+    networks:
+      - front-tier
     depends_on:
-      - redis
-
-
+      - v1
+      - v2
+  
   redis:
     image: redis:alpine
     container_name: redis-server
     ports:
       - "6379:6379"
+    networks:
+      - back-tier
+    # volumes: 
+    #   - ./healthcheks/:/healthcheks/
+    # command: ./healthcheks/redis.sh
+  db:
+    image: postgres:15-alpine
+    networks:
+      - back-tier
+    environment:
+      POSTGRES_USER: myuser 
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: mydatabase
     volumes: 
-    - ./healthchecks/:/healthchecks/  # This ensures scripts exist inside the container
-    
+      - db-data:/var/lib/postgresql/data/
+    # command: ./healthcheks/postgres.sh
 
-  # db:
-  #   image: postgres:15-alpine
-  #   volumes: 
-  #     - db-data:/var/lib/postgresql/data/
-  #     - ./healthchecks/:/healthchecks/
-  #   command: ["/healthchecks/postgres.sh"]
-  
   # seed:
   #   build: ./seed-data
   #   depends_on:
   #     - nginx
-
 volumes: 
   db-data:
-    
+    name: my-db-data

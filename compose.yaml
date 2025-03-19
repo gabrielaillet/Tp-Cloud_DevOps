@@ -32,10 +32,11 @@ services:
 
   db:
     image: postgres:15-alpine
+    container_name: db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     volumes: 
       - db-data:/var/lib/postgresql/data/
       # - ./healthchecks/:/healthchecks/
@@ -49,11 +50,16 @@ services:
   #     - nginx
 
   worker:
-    build: ./worker
+    build: 
+      context: ./worker
+      args:
+        TARGETARCH: amd64
+        TARGETPLATFORM: linux/amd64
+        BUILDPLATFORM: linux/amd64
     depends_on:
       - redis
       - db
-
+   
 volumes: 
   db-data:
     

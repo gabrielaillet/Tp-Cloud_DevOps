@@ -30,17 +30,29 @@ services:
     - ./healthchecks/:/healthchecks/  # This ensures scripts exist inside the container
     
 
-  # db:
-  #   image: postgres:15-alpine
-  #   volumes: 
-  #     - db-data:/var/lib/postgresql/data/
-  #     - ./healthchecks/:/healthchecks/
-  #   command: ["/healthchecks/postgres.sh"]
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes: 
+      - db-data:/var/lib/postgresql/data/
+      # - ./healthchecks/:/healthchecks/
+    # command: ["/healthchecks/postgres.sh"]
+    ports:
+    - "5432:5432"
   
   # seed:
   #   build: ./seed-data
   #   depends_on:
   #     - nginx
+
+  worker:
+    build: ./worker
+    depends_on:
+      - redis
+      - db
 
 volumes: 
   db-data:

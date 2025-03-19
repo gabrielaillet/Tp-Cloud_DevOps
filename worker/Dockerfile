@@ -4,8 +4,8 @@ ARG TARGETARCH
 ARG BUILDPLATFORM
 RUN echo "TARGETPLATFORM=${TARGETPLATFORM}" && echo "TARGETARCH=${TARGETARCH}" && echo "BUILDPLATFORM=${BUILDPLATFORM}"
 WORKDIR /source
-COPY worker.csproj .
-COPY program.cs .
+COPY Worker.csproj .
+COPY Program.cs .
 RUN dotnet restore -a $TARGETARCH
 RUN dotnet publish -c release -o /app -a $TARGETARCH --self-contained false --no-restore
 

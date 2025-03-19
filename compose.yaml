@@ -63,7 +63,7 @@ services:
       - db-data:/var/lib/postgresql/data/
     # command: ./healthcheks/postgres.sh
 
-    
+
   # seed:
   #   build: ./seed-data
   #   depends_on:
@@ -74,7 +74,17 @@ services:
     depends_on:
       - redis
       - db
-
+    networks:
+      - back-tier
+  result:
+    build: ./result
+    depends_on: 
+      - v1
+      - v2
+      - db
+    networks:
+      - back-tier
+      - front-tier
 volumes: 
   db-data:
     name: my-db-data

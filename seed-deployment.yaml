@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seed
+spec:
+  completions: 1  # Ensures the job runs only once
+  backoffLimit: 1 # Limits retries on failure
+  template:
+    metadata:
+      labels:
+        app: seed
+    spec:
+      restartPolicy: Never  # Ensures the job does not restart on completion
+      containers:
+      - name: seed
+        image: europe-west4-docker.pkg.dev/spry-tree-453513-c0/voting-image/seed-kub

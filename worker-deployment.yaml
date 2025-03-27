@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: europe-west9-docker.pkg.dev/silicon-perigee-378005/voting-image/worker:latest
+        image: europe-west4-docker.pkg.dev/spry-tree-453513-c0/voting-image/worker
         args: []
         env:
         - name: REDIS_HOST

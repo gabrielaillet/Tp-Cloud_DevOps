@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: db
 spec:
   selector:
-    app: postgres
+    app: db
   ports:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-  clusterIP: None 
+  clusterIP: None  # This makes it a headless service for direct access to pods.
